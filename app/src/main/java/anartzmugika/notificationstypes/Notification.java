@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
 import anartzmugika.notificationstypes.activities.OpenNotificationActivity;
+import anartzmugika.notificationstypes.databases.NotificationsDB;
 
 /**
  * Created by anartzmugika on 2/1/17.
@@ -16,9 +17,44 @@ import anartzmugika.notificationstypes.activities.OpenNotificationActivity;
 
 public class Notification {
 
+    private String id;
+    private String title;
+    private String icon;
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Notification(){}
+    public Notification(String id, String title, String icon)
+    {
+        setId(id);
+        setTitle(title);
+        setIcon(icon);
+    }
+
     public void createBigStyleNotification(Context context)
     {
-
         Intent intent = createIntentWithNotification(context, 12);
 
         //Hurrengo Intent-era joateko zuzen
@@ -48,10 +84,7 @@ public class Notification {
 
         mBuilder.setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(12/* ID of notification */, mBuilder.build());
+        createNotification(context, 12, mBuilder);
 
 
     }
@@ -74,10 +107,7 @@ public class Notification {
 
         mBuilder.setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(11/* ID of notification */, mBuilder.build());
+        createNotification(context, 11, mBuilder);
 
     }
 
@@ -101,5 +131,21 @@ public class Notification {
                 .setContentText("Events received!!!!");
 
         return mBuilder;
+    }
+
+    public void cancelNotification(Context context, int id)
+    {
+        // remove the notification with the specific id
+        getNotificationManager(context).cancel(id);
+    }
+
+    public void createNotification(Context context, int id, NotificationCompat.Builder mBuilder)
+    {
+        getNotificationManager(context).notify(id/* ID of notification */, mBuilder.build());
+    }
+
+    private NotificationManager getNotificationManager (Context context)
+    {
+        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 }
