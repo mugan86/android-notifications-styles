@@ -2,4 +2,5 @@
     <string name="app_name">NotificationsTypes</string>
     <string name="create_big_notification_style">Big Style Notification</string>
     <string name="create_simple_notification_style">Create simple notification</string>
+    <string name="receive_notifications">Receive notifications</string>
 </resources>
