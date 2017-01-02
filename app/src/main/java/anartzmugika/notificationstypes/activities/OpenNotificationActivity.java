@@ -1,15 +1,13 @@
 package anartzmugika.notificationstypes.activities;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import anartzmugika.notificationstypes.Notification;
+import anartzmugika.notificationstypes.models.Notification;
 import anartzmugika.notificationstypes.R;
 
 public class OpenNotificationActivity extends AppCompatActivity {
@@ -43,7 +41,7 @@ public class OpenNotificationActivity extends AppCompatActivity {
 
         System.out.println("ID of notification: " + id);
 
-        new Notification().cancelNotification(activity, id);
+        new Notification().cancelNotification(activity, id, true);
 
         TextView select_notification_idTextView = (TextView) findViewById(R.id.select_notification_idTextView);
         select_notification_idTextView.setText("Select notification ID: " + id);
