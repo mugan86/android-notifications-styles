@@ -15,8 +15,8 @@ import anartzmugika.notificationstypes.data.ConstantValues;
 
 public class NotificationsDB extends SQLiteOpenHelper{
 
-    private static int version = 9;
-    private static String name = "SustatuAppDB";
+    private static int version = 1;
+    private static String name = "NotificationsDB";
     private static SQLiteDatabase.CursorFactory factory = null;
     private Cursor cursor;
     NotificationsDB dbHelper;
