@@ -1,5 +1,6 @@
-package anartzmugika.notificationstypes;
+package anartzmugika.notificationstypes.activities;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -8,19 +9,33 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import anartzmugika.notificationstypes.Notification;
+import anartzmugika.notificationstypes.R;
+
 public class OpenNotificationActivity extends AppCompatActivity {
 
+    private Activity activity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_notification);
 
+        activity = OpenNotificationActivity.this;
+
         Button create_big_style_notificationButton = (Button) findViewById(R.id.create_big_style_notificationButton);
+        Button create_simple_notificationButton = (Button) findViewById(R.id.create_simple_notificationButton);
 
         create_big_style_notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Notification().createBigStyleNotification(OpenNotificationActivity.this);
+                new Notification().createBigStyleNotification(activity);
+            }
+        });
+
+        create_simple_notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Notification().createSimpleNotification(activity);
             }
         });
 

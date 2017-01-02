@@ -1,9 +1,12 @@
-package anartzmugika.notificationstypes;
+package anartzmugika.notificationstypes.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import anartzmugika.notificationstypes.Notification;
+import anartzmugika.notificationstypes.R;
 
 
 public class MainActivity extends AppCompatActivity {
