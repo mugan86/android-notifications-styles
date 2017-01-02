@@ -9,8 +9,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import anartzmugika.notificationstypes.Notification;
 import anartzmugika.notificationstypes.data.ConstantValues;
+import anartzmugika.notificationstypes.models.Content;
 
 /*********************************************
  * Created by anartzmugika on 2/1/17.
@@ -36,14 +36,6 @@ public class NotificationsDB extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         Log.i(this.getClass().toString(), "Create Data Base");
 
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + ConstantValues.NOTIFICATION_TABLE + "(" +
-                " " + ConstantValues.COLUMN_ID + " TEXT PRIMARY KEY," +
-                " " + ConstantValues.COLUMN_TITLE + " TEXT," +
-                " " + ConstantValues.COLUMN_ICON + " TEXT)");
-
-        Log.i(this.getClass().toString(), "Notifications table create");
-
         String msg_table = "CREATE TABLE IF NOT EXISTS " + ConstantValues.CONTENT_TABLE + "(" +
                 " " + ConstantValues.COLUMN_ID + " INTEGER PRIMARY KEY," +
                 " " + ConstantValues.COLUMN_MSG_DATE + " TEXT, "+
@@ -51,7 +43,6 @@ public class NotificationsDB extends SQLiteOpenHelper{
                 " " + ConstantValues.COLUMN_MSG_AUTHOR + " TEXT," +
                 " " + ConstantValues.COLUMN_MSG_AUTHOR_IMG + " TEXT," +
                 " " + ConstantValues.COLUMN_MSG_SOURCE + " TEXT," +
-                " " + ConstantValues.COLUMN_MSG_NOTIFICATION_ID + " TEXT," +
                 " " + ConstantValues.COLUMN_MSG_BODY + " TEXT)";
 
         db.execSQL(msg_table);
@@ -70,44 +61,58 @@ public class NotificationsDB extends SQLiteOpenHelper{
         this.onCreate(db);
     }
 
-    public void addNotification(String id, String title, String icon)
+    public void addMessage(Content message)
     {
-        String sql = "INSERT OR REPLACE INTO " + ConstantValues.NOTIFICATION_TABLE +
-                " (" + ConstantValues.COLUMN_ID + ", " +
-                ConstantValues.COLUMN_TITLE + ", "+
-                ConstantValues.COLUMN_ICON + " ) " +
-                "VALUES ( ?, ?, ? )";
+        try
+        {
+            String sql = "INSERT OR REPLACE INTO " + ConstantValues.CONTENT_TABLE +
+                    " (" + ConstantValues.COLUMN_ID + ", " +
+                    ConstantValues.COLUMN_MSG_DATE + ", "+
+                    ConstantValues.COLUMN_MSG_IMAGE + ", "+
+                    ConstantValues.COLUMN_MSG_AUTHOR + ", " +
+                    ConstantValues.COLUMN_MSG_AUTHOR_IMG + ", " +
+                    ConstantValues.COLUMN_MSG_SOURCE + ", " +
+                    ConstantValues.COLUMN_MSG_BODY + " ) " +
+                    "VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 
-        System.out.println("SQL: " + sql);
-
-        SQLiteDatabase db = this.getWritableDatabase();
+            SQLiteDatabase db = this.getWritableDatabase();
 
         /*
          * According to the docs http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html
          * Writers should use beginTransactionNonExclusive() or beginTransactionWithListenerNonExclusive(SQLiteTransactionListener)
          * to start a transaction. Non-exclusive mode allows database file to be in readable by other threads executing queries.
          */
-        db.beginTransactionNonExclusive();
-        // db.beginTransaction();
+            db.beginTransactionNonExclusive();
+            // db.beginTransaction();
 
-        SQLiteStatement stmt = db.compileStatement(sql);
+            SQLiteStatement stmt = db.compileStatement(sql);
+            stmt.bindString(1, String.valueOf(message.getId()));
+            stmt.bindString(2, String.valueOf(message.getDate()));
+            stmt.bindString(3, String.valueOf(message.getImage()));
+            stmt.bindString(4, message.getAuthor());
+            stmt.bindString(5, message.getAuthor_img());
+            stmt.bindString(6, message.getSource());
+            stmt.bindString(7, message.getBody());
 
-        stmt.bindString(1,  id);
-        stmt.bindString(2, title);
-        stmt.bindString(3,  icon);
-
-        stmt.execute();
-        stmt.clearBindings();
+            stmt.execute();
+            stmt.clearBindings();
 
 
-        db.setTransactionSuccessful();
-        db.endTransaction();
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            System.out.println("Message save succesfully!!!");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Ez du balorea ondo gorde");
+        }
     }
 
     //Notifications
-    public ArrayList<Notification> getNotification() {
+    public ArrayList<Content> getMessages() {
         // 1. build the query
-        String query = "SELECT * FROM " + ConstantValues.NOTIFICATION_TABLE;
+        String query = "SELECT * FROM " + ConstantValues.CONTENT_TABLE;
 
         System.out.println("QUERY: " + query);
 
@@ -115,7 +120,7 @@ public class NotificationsDB extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        ArrayList<Notification> notifications = new ArrayList<>();
+        ArrayList<Content> messages = new ArrayList<>();
         // 3. go over each row, build book and add it to list
         try {
             if (cursor.moveToFirst()) {
@@ -124,14 +129,21 @@ public class NotificationsDB extends SQLiteOpenHelper{
                     System.out.println(cursor.getString(1));
                     System.out.println(cursor.getString(2));
                     System.out.println("Notification add");
-                    notifications.add(new Notification(cursor.getString(0), cursor.getString(1), cursor.getString(2))); //Exist
+                    messages.add(new Content(cursor.getLong(0), cursor.getString(2), cursor.getString(1),
+                            cursor.getString(6), cursor.getString(5), cursor.getString(3), cursor.getString(4))); //Exist
                 } while (cursor.moveToNext());
             }
         } finally {
             closeCursorDb(cursor, db);
-            if (notifications.size() > 0) return notifications;
+            if (messages.size() > 0) return messages;
         }
         return null;
+    }
+
+    public void removeMessages() {
+        System.out.println("SQLITE 145 - DELETE CONTENT DATA");
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(ConstantValues.CONTENT_TABLE, null, null);
     }
     private void closeCursorDb(Cursor cursor, SQLiteDatabase db)
     {
