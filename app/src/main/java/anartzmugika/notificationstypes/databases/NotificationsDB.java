@@ -4,8 +4,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import java.util.ArrayList;
+
+import anartzmugika.notificationstypes.Notification;
 import anartzmugika.notificationstypes.data.ConstantValues;
 
 /*********************************************
@@ -64,5 +68,74 @@ public class NotificationsDB extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + ConstantValues.CONTENT_TABLE);
         //System.out.println("Update to database version in 2016/12/14: Version " + newVersion);
         this.onCreate(db);
+    }
+
+    public void addNotification(String id, String title, String icon)
+    {
+        String sql = "INSERT OR REPLACE INTO " + ConstantValues.NOTIFICATION_TABLE +
+                " (" + ConstantValues.COLUMN_ID + ", " +
+                ConstantValues.COLUMN_TITLE + ", "+
+                ConstantValues.COLUMN_ICON + " ) " +
+                "VALUES ( ?, ?, ? )";
+
+        System.out.println("SQL: " + sql);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        /*
+         * According to the docs http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html
+         * Writers should use beginTransactionNonExclusive() or beginTransactionWithListenerNonExclusive(SQLiteTransactionListener)
+         * to start a transaction. Non-exclusive mode allows database file to be in readable by other threads executing queries.
+         */
+        db.beginTransactionNonExclusive();
+        // db.beginTransaction();
+
+        SQLiteStatement stmt = db.compileStatement(sql);
+
+        stmt.bindString(1,  id);
+        stmt.bindString(2, title);
+        stmt.bindString(3,  icon);
+
+        stmt.execute();
+        stmt.clearBindings();
+
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    //Notifications
+    public ArrayList<Notification> getNotification() {
+        // 1. build the query
+        String query = "SELECT * FROM " + ConstantValues.NOTIFICATION_TABLE;
+
+        System.out.println("QUERY: " + query);
+
+        // 2. get reference to writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        ArrayList<Notification> notifications = new ArrayList<>();
+        // 3. go over each row, build book and add it to list
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    System.out.println(cursor.getString(0));
+                    System.out.println(cursor.getString(1));
+                    System.out.println(cursor.getString(2));
+                    System.out.println("Notification add");
+                    notifications.add(new Notification(cursor.getString(0), cursor.getString(1), cursor.getString(2))); //Exist
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            closeCursorDb(cursor, db);
+            if (notifications.size() > 0) return notifications;
+        }
+        return null;
+    }
+    private void closeCursorDb(Cursor cursor, SQLiteDatabase db)
+    {
+        if (!cursor.isClosed()) cursor.close();
+        if (db.isOpen()) db.close();
     }
 }
