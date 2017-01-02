@@ -1,4 +1,4 @@
-package anartzmugika.notificationstypes;
+package anartzmugika.notificationstypes.models;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,6 +8,7 @@ import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import anartzmugika.notificationstypes.R;
 import anartzmugika.notificationstypes.activities.OpenNotificationActivity;
 import anartzmugika.notificationstypes.databases.NotificationsDB;
 
@@ -16,42 +17,6 @@ import anartzmugika.notificationstypes.databases.NotificationsDB;
  */
 
 public class Notification {
-
-    private String id;
-    private String title;
-    private String icon;
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Notification(){}
-    public Notification(String id, String title, String icon)
-    {
-        setId(id);
-        setTitle(title);
-        setIcon(icon);
-    }
 
     public void createBigStyleNotification(Context context)
     {
@@ -66,7 +31,7 @@ public class Notification {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder mBuilder = createNotificationBuilder(context, R.mipmap.ic_launcher, "Event Tracker " + 12, "Events received!!", 12);
+        NotificationCompat.Builder mBuilder = createNotificationBuilder(context, android.R.drawable.ic_dialog_info, "Event Tracker " + 12, "Events received!!", 12);
 
         NotificationCompat.InboxStyle inboxStyle =
                 new NotificationCompat.InboxStyle();
@@ -86,6 +51,7 @@ public class Notification {
 
         createNotification(context, 12, mBuilder);
 
+        cancelNotification(context,  11, false);
 
     }
 
@@ -133,8 +99,16 @@ public class Notification {
         return mBuilder;
     }
 
-    public void cancelNotification(Context context, int id)
+    public void cancelNotification(Context context, int id, boolean delete_all)
     {
+        if (delete_all) //Remove all messages in database
+        {
+            NotificationsDB dbHelper = new NotificationsDB(context);
+            dbHelper.removeMessages();
+            dbHelper.close();
+        }
+
+
         // remove the notification with the specific id
         getNotificationManager(context).cancel(id);
     }
