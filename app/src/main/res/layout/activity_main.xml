@@ -20,6 +20,6 @@
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_big_notification_style"
-        android:id="@+id/create_big_style_notificationButton"/>
+        android:text="@string/receive_notifications"
+        android:id="@+id/create_notificationButton"/>
 </RelativeLayout>
