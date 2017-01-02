@@ -43,11 +43,7 @@ public class OpenNotificationActivity extends AppCompatActivity {
 
         System.out.println("ID of notification: " + id);
 
-        NotificationManager myNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Ezabatu notifikazioa remove the notification with the specific id
-        myNotificationManager.cancel(id);
+        new Notification().cancelNotification(activity, id);
 
         TextView select_notification_idTextView = (TextView) findViewById(R.id.select_notification_idTextView);
         select_notification_idTextView.setText("Select notification ID: " + id);
