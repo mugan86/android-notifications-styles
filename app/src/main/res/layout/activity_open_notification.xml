@@ -8,12 +8,19 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="anartzmugika.notificationstypes.OpenNotificationActivity">
+    tools:context="anartzmugika.notificationstypes.activities.OpenNotificationActivity">
     <TextView
         android:layout_centerInParent="true"
         android:id="@+id/select_notification_idTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <Button
+        android:layout_above="@+id/create_big_style_notificationButton"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_simple_notification_style"
+        android:id="@+id/create_simple_notificationButton"/>
     <Button
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
