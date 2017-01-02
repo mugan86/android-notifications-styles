@@ -26,5 +26,6 @@ public class ConstantValues {
     public static final String COLUMN_MSG_SOURCE = "source";
     public static final String COLUMN_MSG_BODY = "body";
     public static final String COLUMN_MSG_DATE = "date";
+    public static final String COLUMN_MSG_NOTIFICATION_ID = "notification_id";
 
 }
