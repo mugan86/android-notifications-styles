@@ -47,6 +47,7 @@ public class NotificationsDB extends SQLiteOpenHelper{
                 " " + ConstantValues.COLUMN_MSG_AUTHOR + " TEXT," +
                 " " + ConstantValues.COLUMN_MSG_AUTHOR_IMG + " TEXT," +
                 " " + ConstantValues.COLUMN_MSG_SOURCE + " TEXT," +
+                " " + ConstantValues.COLUMN_MSG_NOTIFICATION_ID + " TEXT," +
                 " " + ConstantValues.COLUMN_MSG_BODY + " TEXT)";
 
         db.execSQL(msg_table);
